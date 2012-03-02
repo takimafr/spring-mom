@@ -23,8 +23,9 @@ import org.apache.commons.io.IOUtils;
  */
 public class MOMResponseBinaryParser implements MOMResponseParser {
 
-	public Object parse(byte[] data) {
-		return IOUtils.toInputStream(new String(data));
+	@Override
+	public Object[] parse(byte[] data) {
+		return new Object[] { IOUtils.toInputStream(new String(data)) };
 	}
 
 }

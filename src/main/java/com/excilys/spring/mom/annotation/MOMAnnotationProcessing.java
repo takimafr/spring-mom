@@ -56,19 +56,16 @@ public class MOMAnnotationProcessing implements BeanPostProcessor, Ordered {
 		final Class<?> clazz = bean.getClass();
 		MOMController classAnnotation = clazz.getAnnotation(MOMController.class);
 
+		// If the bean is annotated with @MOMController
 		if (classAnnotation != null) {
 			ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
 				public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
-					MOMMapping annotation = method.getAnnotation(MOMMapping.class);
+					MOMMapping methodAnnotation = method.getAnnotation(MOMMapping.class);
 
-					if (annotation != null) {
-						String topic = annotation.topic();
-						if (applicationContext != null) {
-							// Resolve properties like '${topic.name}' on the topic
-							topic = applicationContext.getBeanFactory().resolveEmbeddedValue(topic);
-						}
-
-						MOMMappingConsum consum = annotation.consumes();
+					// If the method is annotated with @MOMMapping
+					if (methodAnnotation != null) {
+						String topic = resolveProperty(methodAnnotation.topic());
+						MOMMappingConsum consum = methodAnnotation.consumes();
 
 						momClient.subscribe(topic, new MOMMethodHandler(method, bean, consum));
 					}
@@ -77,5 +74,18 @@ public class MOMAnnotationProcessing implements BeanPostProcessor, Ordered {
 		}
 
 		return bean;
+	}
+
+	/**
+	 * Resolve the value parameter as a property formatted like <code>${my.property}</code>
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private String resolveProperty(String value) {
+		if (applicationContext != null) {
+			return applicationContext.getBeanFactory().resolveEmbeddedValue(value);
+		}
+		return value;
 	}
 }

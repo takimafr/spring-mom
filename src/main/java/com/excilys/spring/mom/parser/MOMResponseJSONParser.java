@@ -26,18 +26,19 @@ import org.codehaus.jackson.map.ObjectMapper;
  * 
  */
 public class MOMResponseJSONParser implements MOMResponseParser {
-	
-	private Class<?> bindClass;
 
-	public MOMResponseJSONParser(Class<?> bindClass) {
-		this.bindClass = bindClass;
+	private final Class<?> bindClass;
+
+	public MOMResponseJSONParser(Class<?> bindClasses) {
+		this.bindClass = bindClasses;
 	}
 
-	public Object parse(byte[] data) {
+	@Override
+	public Object[] parse(byte[] data) {
 		ObjectMapper mapper = new ObjectMapper();
-		
+
 		try {
-			return mapper.readValue(data, bindClass);
+			return new Object[] { mapper.readValue(data, bindClass) };
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {

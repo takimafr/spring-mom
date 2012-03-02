@@ -20,7 +20,13 @@ package com.excilys.spring.mom.parser;
  * 
  */
 public interface MOMResponseParser {
-	
-	Object parse(byte[] data);
+
+	/**
+	 * Parse data according to the class strategy.
+	 * 
+	 * @param data
+	 * @return
+	 */
+	Object[] parse(byte[] data);
 
 }

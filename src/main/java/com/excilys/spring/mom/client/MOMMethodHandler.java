@@ -15,11 +15,17 @@
  */
 package com.excilys.spring.mom.client;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.spring.mom.annotation.MOMAttribute;
 import com.excilys.spring.mom.annotation.MOMMappingConsum;
 import com.excilys.spring.mom.parser.MOMResponseBinaryParser;
+import com.excilys.spring.mom.parser.MOMResponseJSONAttributesParser;
 import com.excilys.spring.mom.parser.MOMResponseJSONParser;
 import com.excilys.spring.mom.parser.MOMResponseParser;
 import com.excilys.spring.mom.parser.MOMResponseStringParser;
@@ -29,6 +35,9 @@ import com.excilys.spring.mom.parser.MOMResponseStringParser;
  * 
  */
 public class MOMMethodHandler implements Comparable<MOMMethodHandler> {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(MOMMethodHandler.class);
+
 	private final Method method;
 	private final Object instance;
 	private final MOMMappingConsum consum;
@@ -41,22 +50,80 @@ public class MOMMethodHandler implements Comparable<MOMMethodHandler> {
 		this.parser = getParser(consum);
 	}
 
+	/**
+	 * Invoke the mapped method with data received by the MOMClient. The input will be parsed according to
+	 * <code>@MOMAttribue.consum</code>.
+	 * 
+	 * @param data
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	public Object invoke(byte[] data) throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
-		Object parsedData = parser.parse(data);
+		Object[] parsedData = parser.parse(data);
 		return method.invoke(instance, parsedData);
 	}
 
+	/**
+	 * Return an instance of <code>MOMResponseParser</code> according to the value of <code>consum</code> an method
+	 * parameters. The possible returned instance are the following :
+	 * <ul>
+	 * <li>if <code>consum</code> is BINARY : <code>MOMResponseBinaryParser</code></li>
+	 * <li>if <code>consum</code> is TEXT (default value) : <code>MOMResponseStringParser</code></li>
+	 * <li>if <code>consum</code> is JSON :
+	 * <ul>
+	 * <li>if there are no parameters : <code>MOMResponseStringParser</code></li>
+	 * <li>if there are at least one parameter :
+	 * <ul>
+	 * <li>if there are no <code>@MOMAttribute</code> annotation : <code>MOMResponseJSONParser</code></li>
+	 * <li>if there are not <code>@MOMAttribute</code> annotation on each parameters :
+	 * <code>MOMResponseStringParser</code></li>
+	 * <li>if there are <code>@MOMAttribute</code> annotation on each parameters :
+	 * <code>MOMResponseJSONAttributesParser</code></li>
+	 * </ul>
+	 * </li>
+	 * </ul>
+	 * </li>
+	 * </ul>
+	 * 
+	 * @param consum
+	 */
 	private MOMResponseParser getParser(MOMMappingConsum consum) {
 		switch (consum) {
-		case BINARY:
-			return new MOMResponseBinaryParser();
-		case JSON: {
-			Class<?>[] parameterTypes = method.getParameterTypes();
-			if (parameterTypes.length >= 1) {
-				return new MOMResponseJSONParser(parameterTypes[0]);
+			case BINARY:
+				return new MOMResponseBinaryParser();
+			case JSON: {
+				Class<?>[] parameterTypes = method.getParameterTypes();
+				if (parameterTypes.length == 0) {
+					// If there are no parameters, we can't parse the input to bind to bind it
+					break;
+				}
+
+				int i = 0;
+				Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+				String[] parameterValues = new String[parameterAnnotations.length];
+
+				// Search all annotations of each parameters
+				for (Annotation[] parameterAnnotation : parameterAnnotations) {
+					// Looking for @MOMAttribute annotation of the current parameter
+					for (Annotation annotation : parameterAnnotation) {
+						if (annotation instanceof MOMAttribute) {
+							parameterValues[i++] = ((MOMAttribute) annotation).value();
+						}
+					}
+				}
+
+				// If no &MOMAttribute annotation has been found, then, launch classic MOMResponsJSONParser
+				if (i == 0) {
+					return new MOMResponseJSONParser(parameterTypes[0]);
+				} else if (parameterValues.length != parameterTypes.length) {
+					LOGGER.error("You can't use @MOMAttribute only on few parameters of the method '{}'", method);
+					break;
+				}
+
+				return new MOMResponseJSONAttributesParser(parameterValues);
 			}
-		}
 		}
 
 		return new MOMResponseStringParser();

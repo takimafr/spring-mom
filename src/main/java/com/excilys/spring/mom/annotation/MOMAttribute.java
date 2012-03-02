@@ -13,16 +13,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mom.parser;
+package com.excilys.spring.mom.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author dvilleneuve
  * 
  */
-public class MOMResponseStringParser implements MOMResponseParser {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.PARAMETER })
+public @interface MOMAttribute {
 
-	public Object[] parse(byte[] data) {
-		return new Object[] { new String(data) };
-	}
+	String value();
 
 }
