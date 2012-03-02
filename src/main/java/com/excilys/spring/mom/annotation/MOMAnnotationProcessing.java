@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mom;
+package com.excilys.spring.mom.annotation;
 
 import java.lang.reflect.Method;
 
@@ -25,9 +25,8 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
-import com.excilys.spring.mom.annotation.MOMController;
-import com.excilys.spring.mom.annotation.MOMMapping;
-import com.excilys.spring.mom.annotation.MOMMappingConsum;
+import com.excilys.spring.mom.client.MOMClient;
+import com.excilys.spring.mom.client.MOMMethodHandler;
 
 /**
  * @author dvilleneuve
@@ -71,7 +70,7 @@ public class MOMAnnotationProcessing implements BeanPostProcessor, Ordered {
 
 						MOMMappingConsum consum = annotation.consumes();
 
-						momClient.addTopicListener(topic, new MOMMethodHandler(method, bean, consum));
+						momClient.subscribe(topic, new MOMMethodHandler(method, bean, consum));
 					}
 				}
 			});

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mom;
+package com.excilys.spring.mom.client;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,7 +28,7 @@ import com.excilys.spring.mom.parser.MOMResponseStringParser;
  * @author dvilleneuve
  * 
  */
-class MOMMethodHandler implements Comparable<MOMMethodHandler> {
+public class MOMMethodHandler implements Comparable<MOMMethodHandler> {
 	private final Method method;
 	private final Object instance;
 	private final MOMMappingConsum consum;
