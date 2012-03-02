@@ -13,28 +13,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mqtt;
+package com.excilys.spring.mom;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.excilys.spring.mqtt.annotation.MQTTMappingConsum;
-import com.excilys.spring.mqtt.parser.MQTTResponseBinaryParser;
-import com.excilys.spring.mqtt.parser.MQTTResponseJSONParser;
-import com.excilys.spring.mqtt.parser.MQTTResponseParser;
-import com.excilys.spring.mqtt.parser.MQTTResponseStringParser;
+import com.excilys.spring.mom.annotation.MOMMappingConsum;
+import com.excilys.spring.mom.parser.MOMResponseBinaryParser;
+import com.excilys.spring.mom.parser.MOMResponseJSONParser;
+import com.excilys.spring.mom.parser.MOMResponseParser;
+import com.excilys.spring.mom.parser.MOMResponseStringParser;
 
 /**
  * @author dvilleneuve
  * 
  */
-class MQTTMethodHandler implements Comparable<MQTTMethodHandler> {
+class MOMMethodHandler implements Comparable<MOMMethodHandler> {
 	private final Method method;
 	private final Object instance;
-	private final MQTTMappingConsum consum;
-	private final MQTTResponseParser parser;
+	private final MOMMappingConsum consum;
+	private final MOMResponseParser parser;
 
-	public MQTTMethodHandler(Method method, Object instance, MQTTMappingConsum consum) {
+	public MOMMethodHandler(Method method, Object instance, MOMMappingConsum consum) {
 		this.method = method;
 		this.instance = instance;
 		this.consum = consum;
@@ -47,19 +47,19 @@ class MQTTMethodHandler implements Comparable<MQTTMethodHandler> {
 		return method.invoke(instance, parsedData);
 	}
 
-	private MQTTResponseParser getParser(MQTTMappingConsum consum) {
+	private MOMResponseParser getParser(MOMMappingConsum consum) {
 		switch (consum) {
 		case BINARY:
-			return new MQTTResponseBinaryParser();
+			return new MOMResponseBinaryParser();
 		case JSON: {
 			Class<?>[] parameterTypes = method.getParameterTypes();
 			if (parameterTypes.length >= 1) {
-				return new MQTTResponseJSONParser(parameterTypes[0]);
+				return new MOMResponseJSONParser(parameterTypes[0]);
 			}
 		}
 		}
 
-		return new MQTTResponseStringParser();
+		return new MOMResponseStringParser();
 	}
 
 	public Method getMethod() {
@@ -70,11 +70,11 @@ class MQTTMethodHandler implements Comparable<MQTTMethodHandler> {
 		return instance;
 	}
 
-	public MQTTMappingConsum getConsum() {
+	public MOMMappingConsum getConsum() {
 		return consum;
 	}
 
-	public MQTTResponseParser getParser() {
+	public MOMResponseParser getParser() {
 		return parser;
 	}
 
@@ -96,7 +96,7 @@ class MQTTMethodHandler implements Comparable<MQTTMethodHandler> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		MQTTMethodHandler other = (MQTTMethodHandler) obj;
+		MOMMethodHandler other = (MOMMethodHandler) obj;
 		if (consum != other.consum)
 			return false;
 		if (instance == null) {
@@ -113,7 +113,7 @@ class MQTTMethodHandler implements Comparable<MQTTMethodHandler> {
 	}
 
 	@Override
-	public int compareTo(MQTTMethodHandler o) {
+	public int compareTo(MOMMethodHandler o) {
 		return 0;
 	}
 }

@@ -2,12 +2,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean class="com.excilys.spring.mqtt.annotation.MQTTAnnotationProcessing" />
+	<bean class="com.excilys.spring.mom.annotation.MOMAnnotationProcessing" />
 
-	<bean class="com.excilys.spring.mqtt.MQTTClient">
+	<bean class="com.excilys.spring.mom.client.FakeMOMClient">
 		<constructor-arg value="localhost" />
 		<constructor-arg value="1883" />
-		<constructor-arg value="mqttClientTest" />
+		<constructor-arg value="true" />
 	</bean>
 
 </beans>

@@ -13,14 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mqtt;
+package com.excilys.spring.mom.annotation;
 
 /**
  * @author dvilleneuve
  * 
  */
-public interface MQTTClientListener {
-	
-	void disconnected();
-	
+public enum MOMMappingConsum {
+	STRING, JSON, BINARY
 }

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mqtt;
+package com.excilys.spring.mom;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -35,17 +35,17 @@ import com.albin.mqtt.NettyClient;
  * 
  */
 @Service
-public class MQTTClient {
-	private static final Logger LOGGER = LoggerFactory.getLogger(MQTTClient.class);
+public class MOMClient {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MOMClient.class);
 
-	private final Map<String, Set<MQTTMethodHandler>> topicMethodHandlers;
+	private final Map<String, Set<MOMMethodHandler>> topicMethodHandlers;
 	private final String hostname;
 	private final int port;
 
-	private List<MQTTClientListener> clientListeners;
+	private List<MOMClientListener> clientListeners;
 	private NettyClient nettyClient;
 
-	public MQTTClient(String hostname, int port, String clientId) {
+	public MOMClient(String hostname, int port, String clientId) {
 		this(hostname, port, clientId, true);
 	}
 
@@ -63,12 +63,12 @@ public class MQTTClient {
 	 *            of the mqtt client
 	 * @param autoconnect
 	 */
-	public MQTTClient(String hostname, int port, String clientId, boolean autoconnect) {
-		this.topicMethodHandlers = new HashMap<String, Set<MQTTMethodHandler>>();
+	public MOMClient(String hostname, int port, String clientId, boolean autoconnect) {
+		this.topicMethodHandlers = new HashMap<String, Set<MOMMethodHandler>>();
 		this.hostname = hostname;
 		this.port = port;
 
-		this.clientListeners = new LinkedList<MQTTClientListener>();
+		this.clientListeners = new LinkedList<MOMClientListener>();
 
 		this.nettyClient = new NettyClient(clientId);
 		this.nettyClient.setListener(new MQTTClientInternalListener());
@@ -119,7 +119,7 @@ public class MQTTClient {
 	 * 
 	 * @param clientListener
 	 */
-	public void addClientListener(MQTTClientListener clientListener) {
+	public void addClientListener(MOMClientListener clientListener) {
 		clientListeners.add(clientListener);
 	}
 
@@ -128,7 +128,7 @@ public class MQTTClient {
 	 * 
 	 * @param clientListener
 	 */
-	public void removeClientListener(MQTTClientListener clientListener) {
+	public void removeClientListener(MOMClientListener clientListener) {
 		clientListeners.remove(clientListener);
 	}
 
@@ -137,11 +137,11 @@ public class MQTTClient {
 	 * 
 	 * @param topic
 	 */
-	void addTopicListener(String topic, MQTTMethodHandler mqttMethodHandler) {
-		Set<MQTTMethodHandler> methodHandlers = topicMethodHandlers.get(topic);
+	void addTopicListener(String topic, MOMMethodHandler mqttMethodHandler) {
+		Set<MOMMethodHandler> methodHandlers = topicMethodHandlers.get(topic);
 
 		if (methodHandlers == null) {
-			methodHandlers = new TreeSet<MQTTMethodHandler>();
+			methodHandlers = new TreeSet<MOMMethodHandler>();
 			topicMethodHandlers.put(topic, methodHandlers);
 			nettyClient.subscribe(topic);
 
@@ -163,18 +163,18 @@ public class MQTTClient {
 		public void disconnected() {
 			LOGGER.info("MQTTClient disconnected");
 
-			for (MQTTClientListener clientListener : clientListeners) {
+			for (MOMClientListener clientListener : clientListeners) {
 				clientListener.disconnected();
 			}
 		}
 
 		@Override
 		public void publishArrived(String topic, byte[] data) {
-			Set<MQTTMethodHandler> methodHandlers = topicMethodHandlers.get(topic);
+			Set<MOMMethodHandler> methodHandlers = topicMethodHandlers.get(topic);
 
 			LOGGER.info("publishArrived on '{}'", topic);
 
-			for (MQTTMethodHandler methodHandler : methodHandlers) {
+			for (MOMMethodHandler methodHandler : methodHandlers) {
 				if (methodHandler != null && methodHandler.getMethod() != null && methodHandler.getInstance() != null) {
 					try {
 						methodHandler.invoke(data);

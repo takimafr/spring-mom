@@ -13,16 +13,23 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mqtt.parser;
+package com.excilys.spring.mom.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author dvilleneuve
  * 
  */
-public class MQTTResponseStringParser implements MQTTResponseParser {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD })
+public @interface MOMMapping {
 
-	public Object parse(byte[] data) {
-		return new String(data);
-	}
+	String topic() default "*";
+
+	MOMMappingConsum consumes() default MOMMappingConsum.STRING;
 
 }

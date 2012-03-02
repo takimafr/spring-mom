@@ -13,38 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mqtt.parser;
-
-import java.io.IOException;
-
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+package com.excilys.spring.mom.parser;
 
 /**
  * @author dvilleneuve
  * 
  */
-public class MQTTResponseJSONParser implements MQTTResponseParser {
-	
-	private Class<?> bindClass;
-
-	public MQTTResponseJSONParser(Class<?> bindClass) {
-		this.bindClass = bindClass;
-	}
+public class MOMResponseStringParser implements MOMResponseParser {
 
 	public Object parse(byte[] data) {
-		ObjectMapper mapper = new ObjectMapper();
-		
-		try {
-			return mapper.readValue(data, bindClass);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return new String(data);
 	}
+
 }

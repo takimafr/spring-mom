@@ -6,7 +6,7 @@
 		</encoder>
 	</appender>
 
-	<logger name="com.excilys.spring.mqtt" level="DEBUG" />
+	<logger name="com.excilys.spring.mom" level="DEBUG" />
 
 	<root level="WARN">
 		<appender-ref ref="STDOUT" />

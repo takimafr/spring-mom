@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mqtt;
+package com.excilys.spring.mom.client;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,15 +30,15 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:applicationContextTest-spring-mqtt.xml" })
+@ContextConfiguration(locations = { "classpath:applicationContextTest-spring-mom.xml" })
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class })
-public class MQTTClientTest {
+public class MOMClientTest {
 	
 	@Autowired
-	private MQTTClient mqttClient;
+	private FakeMOMClient momClient;
 
 	@Test
-	public void test() {
+	public void subscribeTest() {
 //		fail("Not yet implemented");
 	}
 

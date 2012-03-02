@@ -13,14 +13,46 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mqtt.parser;
+package com.excilys.spring.mom.client;
 
 /**
  * @author dvilleneuve
  * 
  */
-public interface MQTTResponseParser {
-	
-	Object parse(byte[] data);
+public class FakeMOMClient extends MOMClient {
+
+	/**
+	 * @param hostname
+	 * @param port
+	 * @param autoconnect
+	 */
+	public FakeMOMClient(String hostname, int port, boolean autoconnect) {
+		super(hostname, port, autoconnect);
+	}
+
+	@Override
+	public void connect() {
+	}
+
+	@Override
+	public void disconnect() {
+	}
+
+	@Override
+	public void publish(String topic, String message) {
+	}
+
+	@Override
+	public void publish(String topic, byte[] data) {
+	}
+
+	@Override
+	public void ping() {
+	}
+
+	@Override
+	public boolean isConnected() {
+		return false;
+	}
 
 }

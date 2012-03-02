@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mqtt;
+package com.excilys.spring.mom;
 
 import java.lang.reflect.Method;
 
@@ -25,19 +25,19 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
-import com.excilys.spring.mqtt.annotation.MQTTController;
-import com.excilys.spring.mqtt.annotation.MQTTMapping;
-import com.excilys.spring.mqtt.annotation.MQTTMappingConsum;
+import com.excilys.spring.mom.annotation.MOMController;
+import com.excilys.spring.mom.annotation.MOMMapping;
+import com.excilys.spring.mom.annotation.MOMMappingConsum;
 
 /**
  * @author dvilleneuve
  * 
  */
 @Component
-public class MQTTAnnotationProcessing implements BeanPostProcessor, Ordered {
+public class MOMAnnotationProcessing implements BeanPostProcessor, Ordered {
 
 	@Autowired
-	private MQTTClient mqttClient;
+	private MOMClient momClient;
 
 	@Autowired
 	private ConfigurableApplicationContext applicationContext;
@@ -55,22 +55,23 @@ public class MQTTAnnotationProcessing implements BeanPostProcessor, Ordered {
 	@Override
 	public Object postProcessAfterInitialization(final Object bean, String beanName) throws BeansException {
 		final Class<?> clazz = bean.getClass();
-		MQTTController classAnnotation = clazz.getAnnotation(MQTTController.class);
+		MOMController classAnnotation = clazz.getAnnotation(MOMController.class);
 
 		if (classAnnotation != null) {
 			ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
 				public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
-					MQTTMapping annotation = method.getAnnotation(MQTTMapping.class);
+					MOMMapping annotation = method.getAnnotation(MOMMapping.class);
 
 					if (annotation != null) {
 						String topic = annotation.topic();
 						if (applicationContext != null) {
+							// Resolve properties like '${topic.name}' on the topic
 							topic = applicationContext.getBeanFactory().resolveEmbeddedValue(topic);
 						}
 
-						MQTTMappingConsum consum = annotation.consumes();
+						MOMMappingConsum consum = annotation.consumes();
 
-						mqttClient.addTopicListener(topic, new MQTTMethodHandler(method, bean, consum));
+						momClient.addTopicListener(topic, new MOMMethodHandler(method, bean, consum));
 					}
 				}
 			});

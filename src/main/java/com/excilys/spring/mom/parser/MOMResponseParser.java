@@ -13,12 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mqtt.annotation;
+package com.excilys.spring.mom.parser;
 
 /**
  * @author dvilleneuve
  * 
  */
-public enum MQTTMappingConsum {
-	STRING, JSON, BINARY
+public interface MOMResponseParser {
+	
+	Object parse(byte[] data);
+
 }

@@ -27,11 +27,11 @@
 
 		<!-- MQTT -->
 		<mqtt-library.version>0.1-SNAPSHOT</mqtt-library.version>
-		
+
 		<!-- Jackson -->
 		<jackson.version>1.9.2</jackson.version>
 
-		<!-- Commons --> 
+		<!-- Commons -->
 		<commons-io.version>2.1</commons-io.version>
 		<commons-lang.version>2.6</commons-lang.version>
 
@@ -58,7 +58,13 @@
 			<artifactId>mqtt-library</artifactId>
 			<version>${mqtt-library.version}</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>germane-software</groupId>
+			<artifactId>gozirra</artifactId>
+			<version>0.5-SNAPSHOT</version>
+		</dependency>
+
 		<!-- Jackson -->
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>

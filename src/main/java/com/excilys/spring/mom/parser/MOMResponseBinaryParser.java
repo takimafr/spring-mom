@@ -13,22 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mqtt.annotation;
+package com.excilys.spring.mom.parser;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import org.springframework.stereotype.Component;
+import org.apache.commons.io.IOUtils;
 
 /**
  * @author dvilleneuve
  * 
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-@Component
-public @interface MQTTController {
+public class MOMResponseBinaryParser implements MOMResponseParser {
+
+	public Object parse(byte[] data) {
+		return IOUtils.toInputStream(new String(data));
+	}
 
 }
