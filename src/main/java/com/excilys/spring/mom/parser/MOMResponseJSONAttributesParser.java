@@ -25,8 +25,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author dvilleneuve
+ * Concrete class implemented {@link MOMResponseParser MOMResponseParser}.
+ * <p/>
+ * This implementation parse data as a JSON string. Each annotated method parameters will try to be mapped with the
+ * according value of the JSON oject.
+ * <p/>
+ * According the client receive the JSON string '{var1:value1,var2:value2,var3:value3}' on a subscribed topic and the
+ * mapping method signature is the following :
+ * <p/>
+ * <code>@MOMMapping(topic = "topic", consumes = MOMMappingConsum.JSON)
+ * public void received(@MOMAttribute("var1") String param1, @MOMAttribute("var3") String param2) {...}</code>
+ * <p/>
+ * Then the method invoke will be like this : <code>received("value1", "value3");</code>
  * 
+ * @author dvilleneuve
+ * @see MOMResponseParser
  */
 public class MOMResponseJSONAttributesParser implements MOMResponseParser {
 

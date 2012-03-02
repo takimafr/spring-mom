@@ -18,8 +18,12 @@ package com.excilys.spring.mom.parser;
 import org.apache.commons.io.IOUtils;
 
 /**
- * @author dvilleneuve
+ * Concrete class implemented {@link MOMResponseParser MOMResponseParser}.
+ * <p>
+ * This implementation wrap the byte array in an InputStream instance.
  * 
+ * @author dvilleneuve
+ * @see MOMResponseParser
  */
 public class MOMResponseBinaryParser implements MOMResponseParser {
 

@@ -31,8 +31,14 @@ import com.excilys.spring.mom.parser.MOMResponseParser;
 import com.excilys.spring.mom.parser.MOMResponseStringParser;
 
 /**
- * @author dvilleneuve
+ * Encapsulates information about a bean method consisting of a {@linkplain #getMethod() method} and an
+ * {@linkplain #getInstance() instance}. Provides convenient access to method parameters, the method return value,
+ * method annotations.
+ * <p/>
+ * The class is used to invoke mapped methods after parsed input datas by a {@link MOMResponseParser parser}.
  * 
+ * @author dvilleneuve
+ * @see MOMResponseParser
  */
 public class MOMMethodHandler implements Comparable<MOMMethodHandler> {
 

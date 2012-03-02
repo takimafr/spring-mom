@@ -21,35 +21,48 @@ import com.albin.mqtt.MqttListener;
 import com.albin.mqtt.NettyClient;
 
 /**
- * @author dvilleneuve
+ * A concrete sub-class of {@link MOMClient MOMClient} for the <a
+ * href="http://www.ibm.com/developerworks/webservices/library/ws-mqtt/index.html">MQTT protocol</a>.
+ * <p/>
+ * <b>NOTE :</b> This class doesn't support wilcards on topic yet.
  * 
+ * @author dvilleneuve
+ * @see MOMClient
  */
 public class MOMClientMqtt extends MOMClient {
 
 	private NettyClient client;
 
 	/**
+	 * Create an instance of MOMClientMqtt for a specific {@code hostname} and {@code port}, which will auto-connect to
+	 * the server when an instance is created. The {@code clientId} is used by Mqtt server to identify each client.
 	 * 
 	 * @param hostname
 	 * @param port
 	 * @param clientId
+	 * @see MOMClient
 	 */
 	public MOMClientMqtt(String hostname, int port, String clientId) {
 		this(hostname, port, clientId, true);
 	}
 
 	/**
+	 * Create an instance of MOMClientMqtt for a specific {@code hostname} and {@code port}. If {@code autoconnect}
+	 * parameter is true, the instance will auto-connect when it's created. The {@code clientId} is used by Mqtt server
+	 * to identify each client.
+	 * 
 	 * @param hostname
 	 * @param port
 	 * @param clientId
 	 * @param autoconnect
+	 * @see MOMClient
 	 */
 	public MOMClientMqtt(String hostname, int port, String clientId, boolean autoconnect) {
 		super(hostname, port, autoconnect);
 
 		client = new NettyClient(clientId);
-		client.setListener(new MQTTClientInternalListener());
-		
+		client.setListener(new MqttClientInternalListener());
+
 		if (autoconnect) {
 			connect();
 		}
@@ -96,20 +109,19 @@ public class MOMClientMqtt extends MOMClient {
 	public void ping() {
 		client.ping();
 	}
-	
+
 	@Override
 	public boolean isConnected() {
 		return client.isConnected();
 	}
 
 	/**
-	 * Handle the MQTT events and dispatch them to the messaging listener
-	 * according to the concerned topic.
+	 * Handle the MQTT events and dispatch them to the messaging listener according to the concerned topic.
 	 * 
 	 * @author dvilleneuve
 	 * 
 	 */
-	private final class MQTTClientInternalListener implements MqttListener {
+	private final class MqttClientInternalListener implements MqttListener {
 		@Override
 		public void disconnected() {
 			LOGGER.info("MQTTClient disconnected");
@@ -122,8 +134,6 @@ public class MOMClientMqtt extends MOMClient {
 		@Override
 		public void publishArrived(String topic, byte[] data) {
 			Set<MOMMethodHandler> methodHandlers = getTopicMethodHandlers().get(topic);
-
-			LOGGER.info("publishArrived on '{}'", topic);
 
 			for (MOMMethodHandler methodHandler : methodHandlers) {
 				if (methodHandler != null && methodHandler.getMethod() != null && methodHandler.getInstance() != null) {

@@ -22,8 +22,12 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * @author dvilleneuve
+ * Concrete class implemented {@link MOMResponseParser MOMResponseParser}.
+ * <p/>
+ * This implementation parse data as a JSON string and try to map the result object to the method paramater.
  * 
+ * @author dvilleneuve
+ * @see MOMResponseParser
  */
 public class MOMResponseJSONParser implements MOMResponseParser {
 

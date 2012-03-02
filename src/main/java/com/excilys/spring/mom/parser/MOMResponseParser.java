@@ -16,8 +16,9 @@
 package com.excilys.spring.mom.parser;
 
 /**
- * @author dvilleneuve
+ * Interface to implement with a concrete class to parse {@link MOMMethodHandler MOMMethodHandler} input data.
  * 
+ * @author dvilleneuve
  */
 public interface MOMResponseParser {
 

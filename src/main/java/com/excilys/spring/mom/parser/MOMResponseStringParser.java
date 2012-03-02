@@ -16,8 +16,12 @@
 package com.excilys.spring.mom.parser;
 
 /**
- * @author dvilleneuve
+ * Concrete class implemented {@link MOMResponseParser MOMResponseParser}.
+ * <p>
+ * This implementation wrap the byte array in a String instance.
  * 
+ * @author dvilleneuve
+ * @see MOMResponseParser
  */
 public class MOMResponseStringParser implements MOMResponseParser {
 

@@ -21,13 +21,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author dvilleneuve
+ * Annotation which indicates that a method parameter should be bound to a specific JSON value.
  * 
+ * @author dvilleneuve
+ * @see MOMMapping
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.PARAMETER })
 public @interface MOMAttribute {
 
+	/**
+	 * The key of the JSON value to bind to.
+	 */
 	String value();
 
 }

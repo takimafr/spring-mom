@@ -23,8 +23,16 @@ import java.lang.annotation.Target;
 import org.springframework.stereotype.Component;
 
 /**
- * @author dvilleneuve
+ * Indicates that an annotated class is a MOM "Controller".
  * 
+ * <p>
+ * This annotation serves to allowing for implementation classes to be autodetected through classpath scanning. It is
+ * typically used in combination with annotated handler methods based on the
+ * {@link com.excilys.spring.mom.annotation.MOMMapping} annotation.
+ * 
+ * @author dvilleneuve
+ * @see MOMMapping
+ * @see MOMAttribute
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })

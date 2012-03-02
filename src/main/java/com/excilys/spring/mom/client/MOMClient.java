@@ -27,8 +27,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * @author dvilleneuve
+ * Represents a client MOM. This class implements the listener system of subscribing and unsubscribing methods.
+ * <p>
+ * <b>NOTE:</b> Concret sub-classes of {@link MOMClient MOMClient} has to override these two methods to actually
+ * subscribe and unsubscribe to the MOM server.
  * 
+ * @author dvilleneuve
  */
 @Service
 public abstract class MOMClient {
@@ -39,20 +43,27 @@ public abstract class MOMClient {
 	private final String hostname;
 	private final int port;
 
+	/**
+	 * Create an instance of MOMClient for a specific {@code hostname} and {@code port}, which will auto-connect to the
+	 * server when an instance is created.
+	 * 
+	 * @param hostname
+	 *            of the mom server
+	 * @param port
+	 *            of the mom server
+	 */
 	public MOMClient(String hostname, int port) {
 		this(hostname, port, true);
 	}
 
 	/**
-	 * Create an instance of MQTTClient for a specific {@code hostname} and
-	 * {@code port}. The {@code clientId} is also passed as argument. The
-	 * {@code autoconnect} field is used to automaticaly connect to the mom
-	 * broker.
+	 * Create an instance of MOMClient for a specific {@code hostname} and {@code port}. If {@code autoconnect}
+	 * parameter is true, the instance will auto-connect when it's created.
 	 * 
 	 * @param hostname
-	 *            of the mom broker
+	 *            of the mom server
 	 * @param port
-	 *            of the mom broker
+	 *            of the mom server
 	 * @param autoconnect
 	 */
 	public MOMClient(String hostname, int port, boolean autoconnect) {
@@ -63,17 +74,17 @@ public abstract class MOMClient {
 	}
 
 	/**
-	 * Connect to the MQTT broker
+	 * Connect to the MOM server with {@code hostname} and {@code port} given in the constructor.
 	 */
 	public abstract void connect();
 
 	/**
-	 * Disconnect from the MQTT broker
+	 * Disconnect from the MOM server.
 	 */
 	public abstract void disconnect();
 
 	/**
-	 * Subscribe by registering a listener to a specific topic.
+	 * Subscribe to a topic by registering a listener.
 	 * 
 	 * @param topic
 	 */
@@ -89,7 +100,7 @@ public abstract class MOMClient {
 	}
 
 	/**
-	 * Unsubscribe by unregistering all listener for a specific topic.
+	 * Unsubscribe from a specific topic by unregistering all listeners.
 	 * 
 	 * @param topic
 	 */
@@ -98,9 +109,8 @@ public abstract class MOMClient {
 	}
 
 	/**
-	 * Publish a new message on a specific topic to the MQTT broker. Each
-	 * connected device which subscribed to this topic will receive this
-	 * message.
+	 * Publish a new message on a specific topic to the MOM server. Each connected device which subscribed to this topic
+	 * will receive this message.
 	 * 
 	 * @param topic
 	 * @param message
@@ -108,8 +118,8 @@ public abstract class MOMClient {
 	public abstract void publish(String topic, String message);
 
 	/**
-	 * Publish a stream on a specific topic to the MQTT broker. Each connected
-	 * device which subscribed to this topic will receive this message.
+	 * Publish a stream on a specific topic to the MOM server. Each connected device which subscribed to this topic will
+	 * receive this message.
 	 * 
 	 * @param topic
 	 * @param data
@@ -117,26 +127,27 @@ public abstract class MOMClient {
 	public abstract void publish(String topic, byte[] data);
 
 	/**
-	 * Send a ping request to the MQTT broket just to say 'Hey, I'm alive'.
+	 * Send a ping request to the MOM server, just to say 'Hey, I'm alive'.
 	 */
 	public abstract void ping();
-	
+
 	/**
-	 * Check if the client is connected to the server
+	 * Check if the client is connected to the server.
 	 */
 	public abstract boolean isConnected();
 
 	/**
-	 * Add a MOM listener to the client. This is sued
+	 * Add a MOM listener to the client. This is used to notify and client has been disconnected.
 	 * 
 	 * @param clientListener
+	 * @see MOMClientListener
 	 */
 	public void addClientListener(MOMClientListener clientListener) {
 		clientListeners.add(clientListener);
 	}
 
 	/**
-	 * Remove a MOM listener to the client.
+	 * Remove a MOM listener from the client.
 	 * 
 	 * @param clientListener
 	 */

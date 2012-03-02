@@ -22,8 +22,11 @@ import net.ser1.stomp.Listener;
 import net.ser1.stomp.client.Client;
 
 /**
- * @author dvilleneuve
+ * A concrete sub-class of {@link MOMClient MOMClient} for the <a
+ * href="http://stomp.github.com/stomp-specification-1.1.html">STOMP protocol</a>.
  * 
+ * @author dvilleneuve
+ * @see MOMClient
  */
 public class MOMClientStomp extends MOMClient {
 
@@ -34,20 +37,31 @@ public class MOMClientStomp extends MOMClient {
 	private Client client;
 
 	/**
+	 * Create an instance of MOMClientStomp for a specific {@code hostname} and {@code port}, which will auto-connect to
+	 * the server when an instance is created. {@code username} and {@code password} are used by STOMP server to
+	 * authenticate each client.
 	 * 
 	 * @param hostname
 	 * @param port
-	 * @param clientId
+	 * @param username
+	 * @param password
+	 * @see MOMClient
 	 */
 	public MOMClientStomp(String hostname, int port, String username, String password) {
 		this(hostname, port, username, password, true);
 	}
 
 	/**
+	 * Create an instance of MOMClientMqtt for a specific {@code hostname} and {@code port}. If {@code autoconnect}
+	 * parameter is true, the instance will auto-connect when it's created. {@code username} and {@code password} are
+	 * used by STOMP server to authenticate each client.
+	 * 
 	 * @param hostname
 	 * @param port
-	 * @param clientId
+	 * @param username
+	 * @param password
 	 * @param autoconnect
+	 * @see MOMClient
 	 */
 	public MOMClientStomp(String hostname, int port, String username, String password, boolean autoconnect) {
 		super(hostname, port, autoconnect);
@@ -86,7 +100,7 @@ public class MOMClientStomp extends MOMClient {
 			return;
 
 		super.subscribe(topic, momMethodHandler);
-		client.subscribe(topic, new MQTTClientInternalListener(topic));
+		client.subscribe(topic, new StompClientInternalListener(topic));
 	}
 
 	@Override
@@ -99,9 +113,8 @@ public class MOMClientStomp extends MOMClient {
 	}
 
 	/**
-	 * Publish a new message on a specific topic to the MQTT broker. Each
-	 * connected device which subscribed to this topic will receive this
-	 * message.
+	 * Publish a new message on a specific topic to the STOMP server. Each connected device which subscribed to this
+	 * topic will receive this message.
 	 * 
 	 * @param topic
 	 * @param message
@@ -125,7 +138,7 @@ public class MOMClientStomp extends MOMClient {
 	}
 
 	/**
-	 * Send a ping request to the MQTT broket just to say 'Hey, I'm alive'.
+	 * Send a ping request to the STOMP server just to say 'Hey, I'm alive'.
 	 */
 	@Override
 	public void ping() {
@@ -137,16 +150,15 @@ public class MOMClientStomp extends MOMClient {
 	}
 
 	/**
-	 * Handle the MQTT events and dispatch them to the messaging listener
-	 * according to the concerned topic.
+	 * Handle the STOMP events and dispatch them to the messaging listener according to the concerned topic.
 	 * 
 	 * @author dvilleneuve
 	 * 
 	 */
-	private final class MQTTClientInternalListener implements Listener {
+	private final class StompClientInternalListener implements Listener {
 		private final String topic;
 
-		private MQTTClientInternalListener(String topic) {
+		private StompClientInternalListener(String topic) {
 			this.topic = topic;
 		}
 

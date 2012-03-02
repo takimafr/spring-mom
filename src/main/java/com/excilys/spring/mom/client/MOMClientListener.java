@@ -16,11 +16,12 @@
 package com.excilys.spring.mom.client;
 
 /**
- * @author dvilleneuve
+ * Interface to implement with a concrete class to be notify when client is disconnected.
  * 
+ * @author dvilleneuve
  */
 public interface MOMClientListener {
-	
+
 	void disconnected();
-	
+
 }

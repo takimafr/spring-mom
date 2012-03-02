@@ -16,8 +16,11 @@
 package com.excilys.spring.mom.annotation;
 
 /**
- * @author dvilleneuve
+ * Enumeration of MOM mapping type. Intended for use with the {@link MOMMapping#consum()} attribute of the
+ * {@link MOMMapping} annotation.
  * 
+ * @author dvilleneuve
+ * @see MOMMapping
  */
 public enum MOMMappingConsum {
 	STRING, JSON, BINARY
