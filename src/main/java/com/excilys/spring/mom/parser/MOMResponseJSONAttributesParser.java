@@ -61,7 +61,7 @@ public class MOMResponseJSONAttributesParser implements MOMResponseParser {
 			jsonMap = mapper.readValue(data, new TypeReference<Map<String, Object>>() {
 			});
 		} catch (Exception e) {
-			LOGGER.warn("Unable to parse the json", e);
+			LOGGER.warn("Unable to parse the json string : {}", new String(data), e);
 			return null;
 		}
 

@@ -83,6 +83,7 @@ public class MOMClientStomp extends MOMClient {
 		} catch (Exception e) {
 			LOGGER.error("Failed to connect to Stomp server '" + getHostname() + ":" + getPort() + "'", e);
 		}
+		LOGGER.info("Connected.");
 	}
 
 	@Override
@@ -165,8 +166,6 @@ public class MOMClientStomp extends MOMClient {
 		@Override
 		public void message(Map<String, String> headers, String body) {
 			Set<MOMMethodHandler> methodHandlers = getTopicMethodHandlers().get(topic);
-
-			LOGGER.info("publishArrived on '{}'", topic);
 
 			for (MOMMethodHandler methodHandler : methodHandlers) {
 				if (methodHandler != null && methodHandler.getMethod() != null && methodHandler.getInstance() != null) {

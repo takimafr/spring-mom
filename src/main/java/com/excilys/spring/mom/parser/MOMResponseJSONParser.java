@@ -17,9 +17,10 @@ package com.excilys.spring.mom.parser;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Concrete class implemented {@link MOMResponseParser MOMResponseParser}.
@@ -31,6 +32,8 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 public class MOMResponseJSONParser implements MOMResponseParser {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(MOMResponseJSONParser.class);
+
 	private final Class<?> bindClass;
 
 	public MOMResponseJSONParser(Class<?> bindClasses) {
@@ -41,14 +44,16 @@ public class MOMResponseJSONParser implements MOMResponseParser {
 	public Object[] parse(byte[] data) {
 		ObjectMapper mapper = new ObjectMapper();
 
+		if (data.length == 0) {
+			return null;
+		}
+
 		try {
 			return new Object[] { mapper.readValue(data, bindClass) };
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			LOGGER.warn("Unable to parse the json string : {}", new String(data), e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.warn("Unable to parse the json string", e);
 		}
 		return null;
 	}
