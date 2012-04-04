@@ -25,8 +25,10 @@
 		<!-- Spring -->
 		<spring.version>3.1.0.RELEASE</spring.version>
 
-		<!-- MQTT -->
+		<!-- Brokers -->
 		<mqtt-library.version>0.1-SNAPSHOT</mqtt-library.version>
+		<gozirra.version>0.5</gozirra.version>
+		<soja.version>0.1</soja.version>
 
 		<!-- Jackson -->
 		<jackson.version>1.9.2</jackson.version>
@@ -52,17 +54,22 @@
 			<version>${spring.version}</version>
 		</dependency>
 
-		<!-- MQTT -->
+
+		<!-- Brokers -->
 		<dependency>
 			<groupId>com.albin.mqtt</groupId>
 			<artifactId>mqtt-library</artifactId>
 			<version>${mqtt-library.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>germane-software</groupId>
 			<artifactId>gozirra</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>${gozirra.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.excilys.soja</groupId>
+			<artifactId>soja-client</artifactId>
+			<version>${soja.version}</version>
 		</dependency>
 
 		<!-- Jackson -->

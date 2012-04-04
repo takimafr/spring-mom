@@ -159,7 +159,7 @@ public abstract class MOMClient {
 		return clientListeners;
 	}
 
-	Map<String, Set<MOMMethodHandler>> getTopicMethodHandlers() {
+	public Map<String, Set<MOMMethodHandler>> getTopicMethodHandlers() {
 		return topicMethodHandlers;
 	}
 
