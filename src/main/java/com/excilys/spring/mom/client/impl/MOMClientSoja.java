@@ -87,7 +87,6 @@ public class MOMClientSoja extends MOMClient {
 		} catch (Exception e) {
 			LOGGER.error("Failed to connect to Stomp server '{}:{}'", new String[] { username, password }, e);
 		}
-		LOGGER.info("Connected.");
 	}
 
 	@Override
@@ -167,6 +166,7 @@ public class MOMClientSoja extends MOMClient {
 		@Override
 		public void connected() {
 			isConnected = true;
+			LOGGER.info("Connected.");
 		}
 
 		@Override

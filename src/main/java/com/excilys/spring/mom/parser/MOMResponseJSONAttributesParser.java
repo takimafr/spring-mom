@@ -19,10 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.excilys.spring.mom.annotation.MOMAttributeEncoding;
 
 /**
  * Concrete class implemented {@link MOMResponseParser MOMResponseParser}.
@@ -45,9 +48,9 @@ public class MOMResponseJSONAttributesParser implements MOMResponseParser {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MOMResponseJSONAttributesParser.class);
 
-	private final String[] bindAttributes;
+	private final ParameterInfo[] bindAttributes;
 
-	public MOMResponseJSONAttributesParser(String[] bindAttributes) {
+	public MOMResponseJSONAttributesParser(ParameterInfo[] bindAttributes) {
 		this.bindAttributes = bindAttributes;
 	}
 
@@ -66,8 +69,17 @@ public class MOMResponseJSONAttributesParser implements MOMResponseParser {
 		}
 
 		// For each annotated parameter, try to get back the json value according to the key
-		for (String bindAttribute : bindAttributes) {
-			Object attributeValue = jsonMap.get(bindAttribute);
+		for (ParameterInfo bindAttribute : bindAttributes) {
+			Object attributeValue = jsonMap.get(bindAttribute.getName());
+
+			// Decode a base64 encoded string
+			if (bindAttribute.getEncoding() == MOMAttributeEncoding.BASE64) {
+				if (attributeValue instanceof String) {
+					attributeValue = Base64.decodeBase64((String) attributeValue);
+				} else if (attributeValue instanceof byte[]) {
+					attributeValue = Base64.decodeBase64((byte[]) attributeValue);
+				}
+			}
 
 			if (attributeValue != null) {
 				results.add(attributeValue);

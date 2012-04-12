@@ -29,6 +29,7 @@ import com.excilys.spring.mom.parser.MOMResponseJSONAttributesParser;
 import com.excilys.spring.mom.parser.MOMResponseJSONParser;
 import com.excilys.spring.mom.parser.MOMResponseParser;
 import com.excilys.spring.mom.parser.MOMResponseStringParser;
+import com.excilys.spring.mom.parser.ParameterInfo;
 
 /**
  * Encapsulates information about a bean method consisting of a {@linkplain #getMethod() method} and an
@@ -102,25 +103,28 @@ public class MOMMethodHandler implements Comparable<MOMMethodHandler> {
 			case JSON: {
 				Class<?>[] parameterTypes = method.getParameterTypes();
 				if (parameterTypes.length == 0) {
-					// If there are no parameters, we can't parse the input to bind to bind it
+					// If there are no parameters, we can't parse the input to bind it
 					break;
 				}
 
 				int i = 0;
 				Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-				String[] parameterValues = new String[parameterAnnotations.length];
+				ParameterInfo[] parameterValues = new ParameterInfo[parameterAnnotations.length];
 
 				// Search all annotations of each parameters
 				for (Annotation[] parameterAnnotation : parameterAnnotations) {
 					// Looking for @MOMAttribute annotation of the current parameter
 					for (Annotation annotation : parameterAnnotation) {
 						if (annotation instanceof MOMAttribute) {
-							parameterValues[i++] = ((MOMAttribute) annotation).value();
+							MOMAttribute momAnnotation = (MOMAttribute) annotation;
+							ParameterInfo parameterInfo = new ParameterInfo(momAnnotation.value(),
+									momAnnotation.encoding());
+							parameterValues[i++] = parameterInfo;
 						}
 					}
 				}
 
-				// If no &MOMAttribute annotation has been found, then, launch classic MOMResponsJSONParser
+				// If no @MOMAttribute annotation has been found, then, launch classic MOMResponsJSONParser
 				if (i == 0) {
 					return new MOMResponseJSONParser(parameterTypes[0]);
 				} else if (parameterValues.length != parameterTypes.length) {

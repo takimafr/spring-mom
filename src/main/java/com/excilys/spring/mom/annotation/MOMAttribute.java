@@ -34,5 +34,8 @@ public @interface MOMAttribute {
 	 * The key of the JSON value to bind to.
 	 */
 	String value();
+	
+
+	MOMAttributeEncoding encoding() default MOMAttributeEncoding.PLAIN;
 
 }

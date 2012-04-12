@@ -13,19 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.excilys.spring.mom.client;
+package com.excilys.spring.mom.annotation;
 
 /**
- * Interface to implement with a concrete class to be notify when client is disconnected.
+ * Annotation which indicates how the attribute to bind was encoded.
  * 
  * @author dvilleneuve
+ * @see MOMAttribute
  */
-public interface MOMClientListener {
-
-	void connected();
-
-	void connectionFailed();
-
-	void disconnected();
-
+public enum MOMAttributeEncoding {
+	PLAIN, BASE64
 }
