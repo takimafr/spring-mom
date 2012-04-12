@@ -26,7 +26,6 @@
 		<spring.version>3.1.0.RELEASE</spring.version>
 
 		<!-- Brokers -->
-		<mqtt-library.version>0.1-SNAPSHOT</mqtt-library.version>
 		<gozirra.version>0.5</gozirra.version>
 		<soja.version>0.1</soja.version>
 
@@ -57,11 +56,6 @@
 
 
 		<!-- Brokers -->
-		<dependency>
-			<groupId>com.albin.mqtt</groupId>
-			<artifactId>mqtt-library</artifactId>
-			<version>${mqtt-library.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>germane-software</groupId>
 			<artifactId>gozirra</artifactId>
