@@ -26,7 +26,6 @@
 		<spring.version>3.1.0.RELEASE</spring.version>
 
 		<!-- Brokers -->
-		<gozirra.version>0.5</gozirra.version>
 		<soja.version>0.1</soja.version>
 
 		<!-- Jackson -->
@@ -54,13 +53,7 @@
 			<version>${spring.version}</version>
 		</dependency>
 
-
-		<!-- Brokers -->
-		<dependency>
-			<groupId>germane-software</groupId>
-			<artifactId>gozirra</artifactId>
-			<version>${gozirra.version}</version>
-		</dependency>
+		<!-- Soja -->
 		<dependency>
 			<groupId>com.excilys.soja</groupId>
 			<artifactId>soja-client</artifactId>
