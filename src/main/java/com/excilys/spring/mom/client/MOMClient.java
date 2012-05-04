@@ -155,7 +155,7 @@ public abstract class MOMClient {
 		clientListeners.remove(clientListener);
 	}
 
-	List<MOMClientListener> getClientListeners() {
+	public List<MOMClientListener> getClientListeners() {
 		return clientListeners;
 	}
 

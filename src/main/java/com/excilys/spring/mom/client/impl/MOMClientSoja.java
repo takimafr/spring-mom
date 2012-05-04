@@ -22,6 +22,7 @@ import java.util.Set;
 import com.excilys.soja.client.StompClient;
 import com.excilys.soja.client.events.StompClientListener;
 import com.excilys.spring.mom.client.MOMClient;
+import com.excilys.spring.mom.client.MOMClientListener;
 import com.excilys.spring.mom.client.MOMMethodHandler;
 
 /**
@@ -81,11 +82,15 @@ public class MOMClientSoja extends MOMClient {
 
 	@Override
 	public void connect() {
-		LOGGER.info("Connecting to {}:{}...", username, password);
+		LOGGER.info("Connecting to as {}...", username);
 		try {
 			client.connect(username, password);
 		} catch (Exception e) {
-			LOGGER.error("Failed to connect to Stomp server '{}:{}'", new String[] { username, password }, e);
+			LOGGER.error("Failed to connect to Stomp server as {} ({})", new String[] { username, e.getMessage() });
+
+			for (MOMClientListener clientListener : getClientListeners()) {
+				clientListener.connectionFailed();
+			}
 		}
 	}
 
@@ -167,11 +172,19 @@ public class MOMClientSoja extends MOMClient {
 		public void connected() {
 			isConnected = true;
 			LOGGER.info("Connected.");
+
+			for (MOMClientListener clientListener : getClientListeners()) {
+				clientListener.connected();
+			}
 		}
 
 		@Override
 		public void disconnected() {
 			isConnected = false;
+
+			for (MOMClientListener clientListener : getClientListeners()) {
+				clientListener.disconnected();
+			}
 		}
 
 		@Override
