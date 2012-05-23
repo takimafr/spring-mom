@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.excilys.spring-mom</groupId>
 	<artifactId>spring-mom</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>Spring MOM</name>
 
 	<developers>
@@ -45,6 +45,11 @@
 		<!-- Tests -->
 		<junit.version>4.10</junit.version>
 	</properties>
+
+	<scm>
+		<developerConnection>scm:git|ssh://git@github.com/excilys/spring-mom.git</developerConnection>
+		<tag>v1.0</tag>
+	</scm>
 
 	<dependencies>
 		<!-- Spring -->
