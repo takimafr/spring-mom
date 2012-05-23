@@ -21,6 +21,7 @@ import java.util.Set;
 
 import com.excilys.soja.client.StompClient;
 import com.excilys.soja.client.events.StompClientListener;
+import com.excilys.soja.client.events.StompTopicListener;
 import com.excilys.spring.mom.client.MOMClient;
 import com.excilys.spring.mom.client.MOMClientListener;
 import com.excilys.spring.mom.client.MOMMethodHandler;
@@ -37,7 +38,8 @@ public class MOMClientSoja extends MOMClient {
 	private final String username;
 	private final String password;
 	private final StompClient client;
-	private final HashMap<String, Long> subscriptionIds;
+	private final Map<String, Long> subscriptionIds;
+	private final Map<String, StompTopicListener> stompTopicListeners;
 	private boolean isConnected = false;
 
 	/**
@@ -74,6 +76,7 @@ public class MOMClientSoja extends MOMClient {
 		this.client = new StompClient(hostname, port);
 		this.client.addListener(new StompClientInternalListener());
 		this.subscriptionIds = new HashMap<String, Long>();
+		this.stompTopicListeners = new HashMap<String, StompTopicListener>();
 
 		if (autoconnect) {
 			connect();
@@ -109,7 +112,14 @@ public class MOMClientSoja extends MOMClient {
 			return;
 
 		super.subscribe(topic, momMethodHandler);
-		Long subscriptionId = client.subscribe(topic);
+
+		StompTopicListener stompTopicListener = stompTopicListeners.get(topic);
+		if (stompTopicListener == null) {
+			stompTopicListener = new StompTopicInternalListener(topic);
+			stompTopicListeners.put(topic, stompTopicListener);
+		}
+
+		Long subscriptionId = client.subscribe(topic, stompTopicListener);
 		subscriptionIds.put(topic, subscriptionId);
 	}
 
@@ -166,12 +176,42 @@ public class MOMClientSoja extends MOMClient {
 	 * @author dvilleneuve
 	 * 
 	 */
+	private final class StompTopicInternalListener implements StompTopicListener {
+
+		private String topic;
+
+		public StompTopicInternalListener(String topic) {
+			this.topic = topic;
+		}
+
+		@Override
+		public void receivedMessage(String message, Map<String, String> userHeaders) {
+			Set<MOMMethodHandler> methodHandlers = getTopicMethodHandlers().get(topic);
+
+			for (MOMMethodHandler methodHandler : methodHandlers) {
+				if (methodHandler != null && methodHandler.getMethod() != null && methodHandler.getInstance() != null) {
+					try {
+						methodHandler.invoke(message.getBytes());
+					} catch (Exception e) {
+						LOGGER.error("Can't invoke method", e);
+					}
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * Handle the STOMP events and dispatch them to the messaging listener according to the concerned topic.
+	 * 
+	 * @author dvilleneuve
+	 * 
+	 */
 	private final class StompClientInternalListener implements StompClientListener {
 
 		@Override
 		public void connected() {
 			isConnected = true;
-			LOGGER.info("Connected.");
 
 			for (MOMClientListener clientListener : getClientListeners()) {
 				clientListener.connected();
@@ -184,21 +224,6 @@ public class MOMClientSoja extends MOMClient {
 
 			for (MOMClientListener clientListener : getClientListeners()) {
 				clientListener.disconnected();
-			}
-		}
-
-		@Override
-		public void receivedMessage(String topic, String message, Map<String, String> userHeaders) {
-			Set<MOMMethodHandler> methodHandlers = getTopicMethodHandlers().get(topic);
-
-			for (MOMMethodHandler methodHandler : methodHandlers) {
-				if (methodHandler != null && methodHandler.getMethod() != null && methodHandler.getInstance() != null) {
-					try {
-						methodHandler.invoke(message.getBytes());
-					} catch (Exception e) {
-						LOGGER.error("Can't invoke method", e);
-					}
-				}
 			}
 		}
 
