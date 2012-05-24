@@ -17,10 +17,11 @@ package com.excilys.spring.mom.parser;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Concrete class implemented {@link MOMResponseParser MOMResponseParser}.
@@ -31,6 +32,11 @@ import org.slf4j.LoggerFactory;
  * @see MOMResponseParser
  */
 public class MOMResponseJSONParser implements MOMResponseParser {
+	
+	/**
+	 * ObjectMapper singleton use in a threadsafe manner as configuration won't change on the fly. Much faster this way due to inner cache.
+	 */
+	public static final ObjectMapper MAPPER = new ObjectMapper();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MOMResponseJSONParser.class);
 
@@ -42,14 +48,13 @@ public class MOMResponseJSONParser implements MOMResponseParser {
 
 	@Override
 	public Object[] parse(byte[] data) {
-		ObjectMapper mapper = new ObjectMapper();
-
+		
 		if (data.length == 0) {
 			return null;
 		}
 
 		try {
-			return new Object[] { mapper.readValue(data, bindClass) };
+			return new Object[] { MAPPER.readValue(data, bindClass) };
 		} catch (JsonProcessingException e) {
 			LOGGER.warn("Unable to parse the json string : {}", new String(data), e);
 		} catch (IOException e) {
