@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.spring.mom.annotation.MOMAttributeEncoding;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Concrete class implemented {@link MOMResponseParser MOMResponseParser}.
@@ -56,12 +55,11 @@ public class MOMResponseJSONAttributesParser implements MOMResponseParser {
 
 	@Override
 	public Object[] parse(byte[] data) {
-		ObjectMapper mapper = new ObjectMapper();
 		List<Object> results = new ArrayList<Object>();
 		Map<String, Object> jsonMap;
 
 		try {
-			jsonMap = mapper.readValue(data, new TypeReference<Map<String, Object>>() {
+			jsonMap = MOMResponseJSONParser.MAPPER.readValue(data, new TypeReference<Map<String, Object>>() {
 			});
 		} catch (Exception e) {
 			LOGGER.warn("Unable to parse the json string : {}", new String(data), e);

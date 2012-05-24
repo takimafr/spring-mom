@@ -32,6 +32,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @see MOMResponseParser
  */
 public class MOMResponseJSONParser implements MOMResponseParser {
+	
+	/**
+	 * ObjectMapper singleton use in a threadsafe manner as configuration won't change on the fly. Much faster this way due to inner cache.
+	 */
+	public static final ObjectMapper MAPPER = new ObjectMapper();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MOMResponseJSONParser.class);
 
@@ -43,14 +48,13 @@ public class MOMResponseJSONParser implements MOMResponseParser {
 
 	@Override
 	public Object[] parse(byte[] data) {
-		ObjectMapper mapper = new ObjectMapper();
-
+		
 		if (data.length == 0) {
 			return null;
 		}
 
 		try {
-			return new Object[] { mapper.readValue(data, bindClass) };
+			return new Object[] { MAPPER.readValue(data, bindClass) };
 		} catch (JsonProcessingException e) {
 			LOGGER.warn("Unable to parse the json string : {}", new String(data), e);
 		} catch (IOException e) {
