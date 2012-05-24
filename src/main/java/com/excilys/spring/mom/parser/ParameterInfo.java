@@ -22,7 +22,6 @@ public class ParameterInfo {
 	 * @param clazz
 	 */
 	public ParameterInfo(String name, MOMAttributeEncoding encoding) {
-		super();
 		this.name = name;
 		this.encoding = encoding;
 	}

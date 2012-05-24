@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Concrete class implemented {@link MOMResponseParser MOMResponseParser}.
@@ -33,11 +32,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class MOMResponseJSONParser implements MOMResponseParser {
 	
-	/**
-	 * ObjectMapper singleton use in a threadsafe manner as configuration won't change on the fly. Much faster this way due to inner cache.
-	 */
-	public static final ObjectMapper MAPPER = new ObjectMapper();
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(MOMResponseJSONParser.class);
 
 	private final Class<?> bindClass;
@@ -54,7 +48,7 @@ public class MOMResponseJSONParser implements MOMResponseParser {
 		}
 
 		try {
-			return new Object[] { MAPPER.readValue(data, bindClass) };
+			return new Object[] { ObjectMapperSingleton.INSTANCE.getMapper().readValue(data, bindClass) };
 		} catch (JsonProcessingException e) {
 			LOGGER.warn("Unable to parse the json string : {}", new String(data), e);
 		} catch (IOException e) {
