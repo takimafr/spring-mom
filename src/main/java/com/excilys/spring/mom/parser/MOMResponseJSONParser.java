@@ -17,10 +17,11 @@ package com.excilys.spring.mom.parser;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Concrete class implemented {@link MOMResponseParser MOMResponseParser}.
