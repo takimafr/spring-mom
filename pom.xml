@@ -27,7 +27,7 @@
 		<spring.version>3.1.1.RELEASE</spring.version>
 
 		<!-- Brokers -->
-		<soja.version>1.1-SNAPSHOT</soja.version>
+		<soja.version>1.1</soja.version>
 
 		<!-- Jackson -->
 		<jackson.version>2.0.2</jackson.version>
