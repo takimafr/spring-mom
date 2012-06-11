@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 /**
  * Concrete class implemented {@link MOMResponseParser MOMResponseParser}.
@@ -31,10 +32,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  * @see MOMResponseParser
  */
 public class MOMResponseJSONParser implements MOMResponseParser {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(MOMResponseJSONParser.class);
 
 	private final Class<?> bindClass;
+
+	static {
+		ObjectMapperSingleton.INSTANCE.getMapper().registerModule(new JodaModule());
+	}
 
 	public MOMResponseJSONParser(Class<?> bindClasses) {
 		this.bindClass = bindClasses;
@@ -42,7 +47,7 @@ public class MOMResponseJSONParser implements MOMResponseParser {
 
 	@Override
 	public Object[] parse(byte[] data) {
-		
+
 		if (data.length == 0) {
 			return null;
 		}
