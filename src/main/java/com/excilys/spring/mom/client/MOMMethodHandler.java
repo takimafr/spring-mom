@@ -134,6 +134,8 @@ public class MOMMethodHandler implements Comparable<MOMMethodHandler> {
 
 				return new MOMResponseJSONAttributesParser(parameterValues);
 			}
+			case STRING:
+				return new MOMResponseStringParser();
 		}
 
 		return new MOMResponseStringParser();
