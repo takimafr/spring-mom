@@ -15,6 +15,7 @@
  */
 package com.excilys.spring.mom.client;
 
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import com.excilys.soja.client.exception.NotConnectedException;
 
 /**
  * Represents a client MOM. This class implements the listener system of subscribing and unsubscribing methods.
@@ -80,15 +83,19 @@ public abstract class MOMClient {
 
 	/**
 	 * Disconnect from the MOM server.
+	 * @throws SocketException 
+	 * @throws NotConnectedException 
 	 */
-	public abstract void disconnect();
+	public abstract void disconnect() throws NotConnectedException, SocketException;
 
 	/**
 	 * Subscribe to a topic by registering a listener.
 	 * 
 	 * @param topic
+	 * @throws SocketException 
+	 * @throws NotConnectedException 
 	 */
-	public void subscribe(String topic, MOMMethodHandler momMethodHandler) {
+	public void subscribe(String topic, MOMMethodHandler momMethodHandler) throws NotConnectedException, SocketException {
 		Set<MOMMethodHandler> methodHandlers = topicMethodHandlers.get(topic);
 
 		if (methodHandlers == null) {
@@ -103,8 +110,10 @@ public abstract class MOMClient {
 	 * Unsubscribe from a specific topic by unregistering all listeners.
 	 * 
 	 * @param topic
+	 * @throws SocketException 
+	 * @throws NotConnectedException 
 	 */
-	public void unsubscribe(String topic) {
+	public void unsubscribe(String topic) throws NotConnectedException, SocketException {
 		topicMethodHandlers.remove(topic);
 	}
 
@@ -114,8 +123,10 @@ public abstract class MOMClient {
 	 * 
 	 * @param topic
 	 * @param message
+	 * @throws SocketException 
+	 * @throws NotConnectedException 
 	 */
-	public abstract void publish(String topic, String message);
+	public abstract void publish(String topic, String message) throws NotConnectedException, SocketException;
 
 	/**
 	 * Publish a stream on a specific topic to the MOM server. Each connected device which subscribed to this topic will
@@ -123,8 +134,10 @@ public abstract class MOMClient {
 	 * 
 	 * @param topic
 	 * @param data
+	 * @throws SocketException 
+	 * @throws NotConnectedException 
 	 */
-	public abstract void publish(String topic, byte[] data);
+	public abstract void publish(String topic, byte[] data) throws NotConnectedException, SocketException;
 
 	/**
 	 * Send a ping request to the MOM server, just to say 'Hey, I'm alive'.

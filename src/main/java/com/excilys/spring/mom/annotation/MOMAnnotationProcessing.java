@@ -16,7 +16,10 @@
 package com.excilys.spring.mom.annotation;
 
 import java.lang.reflect.Method;
+import java.net.SocketException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -25,6 +28,7 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
+import com.excilys.soja.client.exception.NotConnectedException;
 import com.excilys.spring.mom.client.MOMClient;
 import com.excilys.spring.mom.client.MOMMethodHandler;
 
@@ -34,6 +38,8 @@ import com.excilys.spring.mom.client.MOMMethodHandler;
  */
 @Component
 public class MOMAnnotationProcessing implements BeanPostProcessor, Ordered {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(MOMAnnotationProcessing.class);
 
 	@Autowired
 	private MOMClient momClient;
@@ -67,7 +73,13 @@ public class MOMAnnotationProcessing implements BeanPostProcessor, Ordered {
 						String topic = resolveProperty(methodAnnotation.topic());
 						MOMMappingConsum consum = methodAnnotation.consumes();
 
-						momClient.subscribe(topic, new MOMMethodHandler(method, bean, consum));
+						try {
+							momClient.subscribe(topic, new MOMMethodHandler(method, bean, consum));
+						} catch (NotConnectedException e) {
+							LOGGER.error("Can't subscribe to topic {}", topic, e);
+						} catch (SocketException e) {
+							LOGGER.error("Can't subscribe to topic {}", topic, e);
+						}
 					}
 				}
 			});

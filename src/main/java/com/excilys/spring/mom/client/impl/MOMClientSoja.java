@@ -15,6 +15,7 @@
  */
 package com.excilys.spring.mom.client.impl;
 
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +23,7 @@ import java.util.Set;
 import com.excilys.soja.client.StompClient;
 import com.excilys.soja.client.events.StompClientListener;
 import com.excilys.soja.client.events.StompTopicListener;
+import com.excilys.soja.client.exception.NotConnectedException;
 import com.excilys.spring.mom.client.MOMClient;
 import com.excilys.spring.mom.client.MOMClientListener;
 import com.excilys.spring.mom.client.MOMMethodHandler;
@@ -98,7 +100,7 @@ public class MOMClientSoja extends MOMClient {
 	}
 
 	@Override
-	public void disconnect() {
+	public void disconnect() throws NotConnectedException, SocketException {
 		if (!isConnected())
 			return;
 
@@ -107,7 +109,7 @@ public class MOMClientSoja extends MOMClient {
 	}
 
 	@Override
-	public void subscribe(String topic, MOMMethodHandler momMethodHandler) {
+	public void subscribe(String topic, MOMMethodHandler momMethodHandler) throws NotConnectedException, SocketException {
 		if (!isConnected())
 			return;
 
@@ -124,7 +126,7 @@ public class MOMClientSoja extends MOMClient {
 	}
 
 	@Override
-	public void unsubscribe(String topic) {
+	public void unsubscribe(String topic) throws NotConnectedException, SocketException {
 		if (!isConnected())
 			return;
 
@@ -139,9 +141,11 @@ public class MOMClientSoja extends MOMClient {
 	 * 
 	 * @param topic
 	 * @param message
+	 * @throws SocketException 
+	 * @throws NotConnectedException 
 	 */
 	@Override
-	public void publish(String topic, String message) {
+	public void publish(String topic, String message) throws NotConnectedException, SocketException {
 		if (!isConnected())
 			return;
 
@@ -150,7 +154,7 @@ public class MOMClientSoja extends MOMClient {
 	}
 
 	@Override
-	public void publish(String topic, byte[] data) {
+	public void publish(String topic, byte[] data) throws NotConnectedException, SocketException {
 		if (!isConnected())
 			return;
 
