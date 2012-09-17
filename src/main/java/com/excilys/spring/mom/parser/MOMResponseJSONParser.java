@@ -17,9 +17,6 @@ package com.excilys.spring.mom.parser;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
@@ -33,8 +30,6 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
  */
 public class MOMResponseJSONParser implements MOMResponseParser {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MOMResponseJSONParser.class);
-
 	private final Class<?> bindClass;
 
 	static {
@@ -46,19 +41,17 @@ public class MOMResponseJSONParser implements MOMResponseParser {
 	}
 
 	@Override
-	public Object[] parse(byte[] data) {
-
-		if (data.length == 0) {
-			return null;
+	public Object[] parse(byte[] data) throws MOMResponseParsingException {
+		if (data == null || data.length == 0) {
+			throw new MOMResponseParsingException("The json string is empty");
 		}
 
 		try {
 			return new Object[] { ObjectMapperSingleton.INSTANCE.getMapper().readValue(data, bindClass) };
 		} catch (JsonProcessingException e) {
-			LOGGER.warn("Unable to parse the json string : {}", new String(data), e);
+			throw new MOMResponseParsingException("Unable to parse the json string : " + new String(data), e);
 		} catch (IOException e) {
-			LOGGER.warn("Unable to parse the json string", e);
+			throw new MOMResponseParsingException("Unable to parse the json string", e);
 		}
-		return null;
 	}
 }

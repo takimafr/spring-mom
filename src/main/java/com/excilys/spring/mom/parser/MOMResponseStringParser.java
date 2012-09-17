@@ -25,7 +25,7 @@ package com.excilys.spring.mom.parser;
  */
 public class MOMResponseStringParser implements MOMResponseParser {
 
-	public Object[] parse(byte[] data) {
+	public Object[] parse(byte[] data) throws MOMResponseParsingException {
 		return new Object[] { new String(data) };
 	}
 

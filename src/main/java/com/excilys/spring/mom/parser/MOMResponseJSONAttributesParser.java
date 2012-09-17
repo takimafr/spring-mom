@@ -15,13 +15,12 @@
  */
 package com.excilys.spring.mom.parser;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.excilys.spring.mom.annotation.MOMAttributeEncoding;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -32,8 +31,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * This implementation parse data as a JSON string. Each annotated method parameters will try to be mapped with the
  * according value of the JSON oject.
  * <p/>
- * According the client receive the JSON string '{var1:value1,var2:value2,var3:value3}' on a subscribed topic and the
- * mapping method signature is the following :
+ * According the client receive the JSON string <code>'{var1:value1, var2:value2, var3:value3}'</code> on a subscribed
+ * topic and the mapping method signature is the following :
  * <p/>
  * <code>@MOMMapping(topic = "topic", consumes = MOMMappingConsum.JSON)
  * public void received(@MOMAttribute("var1") String param1, @MOMAttribute("var3") String param2) {...}</code>
@@ -45,8 +44,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
  */
 public class MOMResponseJSONAttributesParser implements MOMResponseParser {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MOMResponseJSONAttributesParser.class);
-
 	private final ParameterInfo[] bindAttributes;
 
 	public MOMResponseJSONAttributesParser(ParameterInfo[] bindAttributes) {
@@ -54,16 +51,20 @@ public class MOMResponseJSONAttributesParser implements MOMResponseParser {
 	}
 
 	@Override
-	public Object[] parse(byte[] data) {
+	public Object[] parse(byte[] data) throws MOMResponseParsingException {
+		if (data == null || data.length == 0) {
+			throw new MOMResponseParsingException("The json string is empty");
+		}
+
 		List<Object> results = new ArrayList<Object>();
 		Map<String, Object> jsonMap;
 
 		try {
-			jsonMap = ObjectMapperSingleton.INSTANCE.getMapper().readValue(data, new TypeReference<Map<String, Object>>() {
-			});
-		} catch (Exception e) {
-			LOGGER.warn("Unable to parse the json string : {}", new String(data), e);
-			return null;
+			jsonMap = ObjectMapperSingleton.INSTANCE.getMapper().readValue(data,
+					new TypeReference<Map<String, Object>>() {
+					});
+		} catch (IOException e) {
+			throw new MOMResponseParsingException("Unable to parse the json string : " + new String(data), e);
 		}
 
 		// For each annotated parameter, try to get back the json value according to the key

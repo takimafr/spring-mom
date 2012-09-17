@@ -28,6 +28,6 @@ public interface MOMResponseParser {
 	 * @param data
 	 * @return
 	 */
-	Object[] parse(byte[] data);
+	Object[] parse(byte[] data) throws MOMResponseParsingException;
 
 }

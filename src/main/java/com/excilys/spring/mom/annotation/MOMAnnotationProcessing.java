@@ -64,6 +64,8 @@ public class MOMAnnotationProcessing implements BeanPostProcessor, Ordered {
 
 		// If the bean is annotated with @MOMController
 		if (classAnnotation != null) {
+			LOGGER.debug("Found @MOMController annotated class : {}", clazz);
+
 			ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
 				public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
 					MOMMapping methodAnnotation = method.getAnnotation(MOMMapping.class);
@@ -72,6 +74,8 @@ public class MOMAnnotationProcessing implements BeanPostProcessor, Ordered {
 					if (methodAnnotation != null) {
 						String topic = resolveProperty(methodAnnotation.topic());
 						MOMMappingConsum consum = methodAnnotation.consumes();
+
+						LOGGER.debug("Configuring @MOMMapping({}) method {}", consum, method);
 
 						try {
 							momClient.subscribe(topic, new MOMMethodHandler(method, bean, consum));

@@ -28,6 +28,7 @@ import com.excilys.spring.mom.parser.MOMResponseBinaryParser;
 import com.excilys.spring.mom.parser.MOMResponseJSONAttributesParser;
 import com.excilys.spring.mom.parser.MOMResponseJSONParser;
 import com.excilys.spring.mom.parser.MOMResponseParser;
+import com.excilys.spring.mom.parser.MOMResponseParsingException;
 import com.excilys.spring.mom.parser.MOMResponseStringParser;
 import com.excilys.spring.mom.parser.ParameterInfo;
 
@@ -68,8 +69,13 @@ public class MOMMethodHandler implements Comparable<MOMMethodHandler> {
 	 */
 	public Object invoke(byte[] data) throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
-		Object[] parsedData = parser.parse(data);
-		return method.invoke(instance, parsedData);
+		try {
+			Object[] parsedData = parser.parse(data);
+			return method.invoke(instance, parsedData);
+		} catch (MOMResponseParsingException e) {
+			LOGGER.error("Can't invoke the MOM method", e);
+		}
+		return null;
 	}
 
 	/**
